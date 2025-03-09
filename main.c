@@ -5,6 +5,7 @@ int scan(void)
 {
     FILE *fp;
     char ch;
+    fp = fopen("test.txt", "r");
 }
 
 int main(void)
