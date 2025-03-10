@@ -33,7 +33,6 @@ int scan_parametros(void) // Leitura dos parâmetros
         if (line[0] != '%') { // Ignora linhas que começam com '%'
             sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
                    &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h);
-            break;
         }
     }
 
@@ -53,7 +52,6 @@ void simular_voo() { // Simulação (1)
     FILE *arquivo = fopen("voo_sim.txt", "w");
     if (arquivo == NULL) {
         printf("Erro ao criar o arquivo voo_sim.txt!\n");
-        return;
     }
 
     fprintf(arquivo, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", tf, dt, S, b, m, rho, CD0, e, alpha);
