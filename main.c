@@ -75,7 +75,7 @@ void simular_voo() {
         double dx = V * cos(gamma);
         double dh = V * sin(gamma);
 
-        // Atualização das variáveis usando Euler
+        // Atualização das variáveis usando Euler met
         V += dV * dt;
         gamma += dGamma * dt;
         x += dx * dt;
