@@ -44,13 +44,59 @@ int scan_parametros(void)
     return 1;
 }
 
+//Rodrigo! Vê esta função q o chatgpt fez e que faz o simulador.txt
+//Substitui aqui pelas tuas próprias funções
+void simular_voo() {
+    FILE *arquivo = fopen("voo_sim.txt", "w");
+    if (arquivo == NULL) {
+        printf("Erro ao criar o arquivo voo_sim.txt!\n");
+        return;
+    }
+
+    // Escrever cabeçalho no arquivo
+    fprintf(arquivo, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", tf, dt, S, b, m, rho, CD0, e, alpha);
+    printf("\nSimulação iniciada...\n");
+
+    double t = 0.0;  // Tempo inicial
+
+    while (t < tf && h > 0) {
+        // Cálculo dos coeficientes aerodinâmicos
+        double AR = (b * b) / S;  // Aspect Ratio
+        double CL = (alpha * M_PI * AR) / (1 + sqrt(1 + pow(AR / 2, 2)));
+        double CD = CD0 + (1 / (M_PI * e * AR)) * CL * CL;
+
+        // Cálculo das forças aerodinâmicas
+        double L = 0.5* rho * V * V * S * CL;  // Sustentação (Lift)
+        double D = 0.5 * rho * V * V * S * CD;  // Arrasto (Drag)
+
+        // Cálculo das equações diferenciais
+        double dV = (-D - m * g * sin(gamma)) / m;
+        double dGamma = (L - m * g * cos(gamma)) / (m * V);
+        double dx = V * cos(gamma);
+        double dh = V * sin(gamma);
+
+        // Atualização das variáveis usando Euler
+        V += dV * dt;
+        gamma += dGamma * dt;
+        x += dx * dt;
+        h += dh * dt;
+        t += dt;
+
+        // Escrever no arquivo
+        fprintf(arquivo, "%lf %lf %lf %lf %lf\n", t, V, gamma, x, h);
+    }
+
+    fclose(arquivo);
+    printf("Simulação concluída! Resultados salvos em voo_sim.txt\n");
+}
+
 // Funções para calcular as derivadas
 void ddt(V, gamma, D, L, double *dV, double *dGamma) {
     *dV = (1.0 / m) * (-D - m * g * sin(gamma));
     *dGamma = (1.0 / m) * V * (L - m * g * cos(gamma));
 }
 
-// Método de Euler para atualizar os valores
+// Euler para atualizar os valores
 void euler(double *V, double *gamma, double D, double L, double dt) {
     double dV, dGamma;
     ddt(*V, *gamma, D, L, &dV, &dGamma);
@@ -87,24 +133,27 @@ void euler2(double *x, double *h, double V, double gamma, double dt) {
 }
 
 int main() {
-    mostrar_menu();
+    int in;
+    int steps = 100;
+    in = scanf("%d\n", &in);
+    do
+    {
+        mostrar_menu();
+        switch (in)
+        {
+            case 0:
+                printf("Voo terminado!\n");
+                break;
+            case 1:
+                scan_parametros();
+                break;
+            case 2:
+                simular_voo();
+                printf("Simulação terminada");
+                break;
+        }
+    } while (in != 0);
 
-    //Isto serve como default
-    tf = 6.0;
-    dt = 1e-5;
-    S = 2.0e-2;
-    b = 14e-2;
-    m = 5e-3;
-    rho = 1.225;
-    CD0 = 0.02;
-    e = 0.9;
-    alpha = 0.1;
-
-    double x = 0.0, h = 0.0;  // Condições iniciais
-    double V = 1.0;           // Velocidade constante (exemplo)
-    double gamma = M_PI / 4;  // Ângulo de 45 graus (exemplo)
-    double dt = 0.01;         // Passo de tempo
-    int steps = 100;          // Número de iterações
 
     for (int i = 0; i < steps; i++) {
         euler2(&x, &h, V, gamma, dt);

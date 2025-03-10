@@ -1,0 +1,38 @@
+% tf tempo final da simulação [s]
+6.0
+
+% Passo de integração dt  [s]
+1e-5
+
+% S – área da asa [m2]
+2.0e-2
+
+% b comprimento da asa [m]
+14e-2
+
+% m – massa da aeronave [kg]
+5e-3
+
+% rho – densidade do ar ao nível do mar [kg/m3]
+1.225
+
+% CD0 – coeficiente de drag
+0.02
+
+% e – fator de eficiência de Oswald
+0.9
+
+% alpha – ângulo de ataque [rad]
+0.1
+
+% V(0) - velocidade inicial [m/s]
+11.0
+
+% gamma(0) - ângulo de trajetória inicial [rad]
+0.0
+
+% x(0) - posição inicial [m]
+0.0
+
+% h(0) - altitude inicial [m]
+5.0
