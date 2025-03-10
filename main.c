@@ -59,7 +59,7 @@ void simular_voo() { // Simulação (1)
 
         // Equações do Drift (Drag * Lift)
         double Cl = (alpha*(pow(b, 2))/S*PI)/(1+sqrt((1+pow((((pow(b, 2))/S)/2), 2))));
-        double Cd = (CD0 + (1/(PI*e*AR))*Cl);
+        double Cd = (CD0 + (1/(PI*e*(pow(b, 2))/S))*Cl);
         D = Cd*0,5*rho*(pow(V, 2)*S);
         L = Cl*0,5*rho*(pow(V, 2)*S);
 
@@ -68,7 +68,7 @@ void simular_voo() { // Simulação (1)
         double dGamma = (L - m * g * cos(gamma)) / (m * V);
         double dx = V * cos(gamma);
         double dh = V * sin(gamma);
-        
+
         // Resolução das equações diferenciais
         V += dV * dt;
         gamma += dGamma * dt;
@@ -105,12 +105,6 @@ int main() {
                 break;
         }
     } while (in != 0);
-
-
-    for (int i = 0; i < steps; i++) {
-        euler2(&x, &h, V, gamma, dt);
-        printf("t = %.2f, x = %.5f, h = %.5f\n", i * dt, x, h);
-    }
 
     return 0;
 }
