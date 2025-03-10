@@ -21,16 +21,22 @@ void mostrar_menu()
 
 int scan_parametros(void) // Leitura dos parâmetros
 {
-    FILE *fp = fopen("config_modelo.txt", "w");
+    FILE *fp = fopen("config_modelo.txt", "r");
     if (fp == NULL)
     {
         printf("Erro ao abrir arquivo config_modelo.txt\n");
-        fclose(fp);
         return 0;
     }
 
-    while (fgetc(fp) == '%') 
-        while (fgetc(fp) != '\n');
+    char line[MAX_LINE];
+    while (fgets(line, MAX_LINE, fp) != NULL) {
+        if (line[0] != '%') { // Ignora linhas que começam com '%'
+            sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
+                   &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h);
+            break;
+        }
+    }
+
 
     if (fscanf(fp, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
                &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h) != 13) {
@@ -60,8 +66,8 @@ void simular_voo() { // Simulação (1)
         // Equações do Drift (Drag * Lift)
         double Cl = (alpha*(pow(b, 2))/S*PI)/(1+sqrt((1+pow((((pow(b, 2))/S)/2), 2))));
         double Cd = (CD0 + (1/(PI*e*(pow(b, 2))/S))*Cl);
-        D = Cd*0,5*rho*(pow(V, 2)*S);
-        L = Cl*0,5*rho*(pow(V, 2)*S);
+        D = Cd*0.5*rho*(pow(V, 2)*S);
+        L = Cl*0.5*rho*(pow(V, 2)*S);
 
         // Cálculo das equações diferenciais
         double dV = (-D - m * g * sin(gamma_v)) / m;
@@ -87,7 +93,7 @@ void simular_voo() { // Simulação (1)
 int main() {
     int in;
     int steps = 100;
-    in = scanf("%d\n", &in);
+    scanf("%d\n", &in);
     do
     {
         mostrar_menu();
