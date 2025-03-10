@@ -7,7 +7,7 @@
 #define PI 3.14159265
 
 double tf, dt, S, b, m, rho, CD0, e, alpha, g; // Variáveis Lidas
-double V, h, x, gamma = 0; 
+double V, h, x, gamma_v = 0;
 double D, L = 0;
 
 void mostrar_menu()
@@ -33,7 +33,7 @@ int scan_parametros(void) // Leitura dos parâmetros
         while (fgetc(fp) != '\n');
 
     if (fscanf(fp, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-               &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma, &x, &h) != 13) {
+               &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h) != 13) {
         printf("Erro: Parâmetros insuficientes no arquivo!\n");
         fclose(fp);
         return 0;
@@ -64,20 +64,20 @@ void simular_voo() { // Simulação (1)
         L = Cl*0,5*rho*(pow(V, 2)*S);
 
         // Cálculo das equações diferenciais
-        double dV = (-D - m * g * sin(gamma)) / m;
-        double dGamma = (L - m * g * cos(gamma)) / (m * V);
-        double dx = V * cos(gamma);
-        double dh = V * sin(gamma);
+        double dV = (-D - m * g * sin(gamma_v)) / m;
+        double dGamma = (L - m * g * cos(gamma_v)) / (m * V);
+        double dx = V * cos(gamma_v);
+        double dh = V * sin(gamma_v);
 
         // Resolução das equações diferenciais
         V += dV * dt;
-        gamma += dGamma * dt;
+        gamma_v += dGamma * dt;
         x += dx * dt;
         h += dh * dt;
         t += dt;
 
         // Documentação no arquivo
-        fprintf(arquivo, "%lf %lf %lf %lf %lf\n", t, V, gamma, x, h);
+        fprintf(arquivo, "%lf %lf %lf %lf %lf\n", t, V, gamma_v, x, h);
     }
 
     fclose(arquivo);
