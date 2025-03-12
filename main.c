@@ -10,6 +10,7 @@ double tf, dt, S, b, m, rho, CD0, e, alpha, g; // Variáveis Lidas
 double V, h, x, gamma_v = 0;
 double D, L = 0;
 
+
 void mostrar_menu()
 {
     printf("\nLista de opções:\n");
@@ -24,25 +25,36 @@ int scan_parametros(void) // Leitura dos parâmetros
     FILE *fp = fopen("config_modelo.txt", "r");
     if (fp == NULL)
     {
-        printf("Erro ao abrir arquivo config_modelo.txt\n");
+        printf("Erro ao abrir arquivo config_modelo.txt\n"); //Caso não consiga abrir retorna 0
         return 0;
     }
 
-    char line[MAX_LINE];
-    while (fgets(line, MAX_LINE, fp) != NULL) {
-        if (line[0] != '%') { // Ignora linhas que começam com '%'
-            sscanf(line, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-                   &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h);
+    double arr[13] = {0};
+    char var[20];
+
+
+    for (int i = 0; i < 13; i++) {
+        if (fscanf(fp, "%[^=]=%lf", var, &arr[i]) != 2) { // Quando a leitura é feita corretamente a função retorna o valor do  número de valores de leitura certa
+            printf("Error reading value at index %d\n", i);
+            arr[i] = 0.0;
         }
+        printf("%lf\n", arr[i]);
     }
 
+    tf=arr[0];
+    dt=arr[1];
+    S=arr[2];
+    b=arr[3];
+    m=arr[4];
+    rho=arr[5];
+    CD0=arr[6];
+    e=arr[7];
+    alpha=arr[8];
+    V=arr[9];
+    gamma_v=arr[10];
+    x=arr[11];
+    h=arr[12];
 
-    if (fscanf(fp, "%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf",
-               &tf, &dt, &S, &b, &m, &rho, &CD0, &e, &alpha, &V, &gamma_v, &x, &h) != 13) {
-        printf("Erro: Parâmetros insuficientes no arquivo!\n");
-        fclose(fp);
-        return 0;
-               }
 
     fclose(fp);
     return 1;
@@ -51,11 +63,11 @@ int scan_parametros(void) // Leitura dos parâmetros
 void simular_voo() { // Simulação (1)
     FILE *arquivo = fopen("voo_sim.txt", "w");
     if (arquivo == NULL) {
-        printf("Erro ao criar o arquivo voo_sim.txt!\n");
+        printf("Erro ao criar o arquivo voo_sim.txt!\n"); //Verifica se o ficheiro existe
     }
 
     fprintf(arquivo, "%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", tf, dt, S, b, m, rho, CD0, e, alpha);
-    printf("\nSimulação iniciada...\n");
+    printf("\nSimulação iniciada...\n");                            //Escreve os parâmetros no ficheiro
 
     double t = 0.0;
 
@@ -90,28 +102,28 @@ void simular_voo() { // Simulação (1)
 
 int main() {
     int in;
-    int steps = 100;
-    scanf("%d\n", &in);
-    do
-    {
+
+    do {
         mostrar_menu();
-        switch (in)
-        {
+        scanf("%d", &in);  // Atualiza a escolha do usuário a cada iteração
+
+        switch (in) {
             case 0:
-                printf("Voo terminado!\n");
+                printf("\nVoo terminado!\n");
                 break;
             case 1:
-                scan_parametros();
+                if (scan_parametros()) {
+                    printf("\nParâmetros carregados com sucesso!\n");
+                }
                 break;
             case 2:
-                simular_voo();
-                printf("Simulação terminada");
+                    simular_voo();
+                    printf("\nSimulação terminada\n");
                 break;
+            default:
+                printf("\nOpção inválida! Tente novamente.\n");
         }
     } while (in != 0);
 
     return 0;
 }
-
-
-
