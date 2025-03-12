@@ -15,8 +15,8 @@ void mostrar_menu()
 {
     printf("\nLista de opções:\n");
     printf("0 – Terminar o programa\n");
-    printf("1 – Simular o movimento da aeronave\n");
-    printf("2 – Determinar os valores mínimos e máximos\n");
+    printf("1 – Introduzir os dados da configuração\n");
+    printf("2 – Simular o movimento da aeronave\n");
     printf("Selecione a opção: ");
 }
 
