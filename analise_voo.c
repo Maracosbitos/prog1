@@ -24,36 +24,36 @@ void mostrar_menu()
 int scan_parametros(void) {
     FILE *fp = fopen("config_modelo.txt", "r");
     if (fp == NULL) {
-        printf("Error: Cannot open config_modelo.txt\n");
+        printf("Erro: Não consegue abrir o ficheiro: config_modelo.txt\n");
         return 0;
     }
 
-    char line[MAX_LINE];
-    int values_read = 0;
+    char linha[MAX_LINE];
+    int valores_lidos = 0;
 
-    while (fgets(line, sizeof(line), fp)) {
-        // Ignore comments and empty lines
-        if (line[0] == '%' || line[0] == '\n') continue;
+    while (fgets(linha, sizeof(linha), fp)) {
+        // Função para ignorar comentários e linhas vazias
+        if (linha[0] == '%' || linha[0] == '\n') continue;
 
-        // Use sscanf to read from the buffer, not from the file
-        switch (values_read) {
-            case 0:  sscanf(line, "%lf", &tf); break;
-            case 1:  sscanf(line, "%lf", &dt); break;
-            case 2:  sscanf(line, "%lf", &S); break;
-            case 3:  sscanf(line, "%lf", &b); break;
-            case 4:  sscanf(line, "%lf", &m); break;
-            case 5:  sscanf(line, "%lf", &rho); break;
-            case 6:  sscanf(line, "%lf", &CD0); break;
-            case 7:  sscanf(line, "%lf", &e); break;
-            case 8:  sscanf(line, "%lf", &alpha); break;
-            case 9:  sscanf(line, "%lf", &V); break;
-            case 10: sscanf(line, "%lf", &gamma_v); break;
-            case 11: sscanf(line, "%lf", &x); break;
-            case 12: sscanf(line, "%lf", &h); break;
+        // Usar o sscanf para ler as strings
+        switch (valores_lidos) {
+            case 0:  sscanf(linha, "%lf", &tf); break;
+            case 1:  sscanf(linha, "%lf", &dt); break;
+            case 2:  sscanf(linha, "%lf", &S); break;
+            case 3:  sscanf(linha, "%lf", &b); break;
+            case 4:  sscanf(linha, "%lf", &m); break;
+            case 5:  sscanf(linha, "%lf", &rho); break;
+            case 6:  sscanf(linha, "%lf", &CD0); break;
+            case 7:  sscanf(linha, "%lf", &e); break;
+            case 8:  sscanf(linha, "%lf", &alpha); break;
+            case 9:  sscanf(linha, "%lf", &V); break;
+            case 10: sscanf(linha, "%lf", &gamma_v); break;
+            case 11: sscanf(linha, "%lf", &x); break;
+            case 12: sscanf(linha, "%lf", &h); break;
             default: break;
         }
 
-        values_read++;
+        valores_lidos++;
     }
 
     printf("%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n",
