@@ -21,61 +21,49 @@ void mostrar_menu()
     printf("Selecione a opção: ");
 }
 
-int scan_parametros(void) // Leitura dos parâmetros
-{
+int scan_parametros(void) {
     FILE *fp = fopen("config_modelo.txt", "r");
-    if (fp == NULL)
-    {
-        printf("Erro ao abrir arquivo config_modelo.txt\n");
+    if (fp == NULL) {
+        printf("Error: Cannot open config_modelo.txt\n");
         return 0;
     }
 
-    double arr[13] = {0};
-    char linha[MAX_LINE];
-    int i = 0;
+    char line[MAX_LINE];
+    int values_read = 0;
 
-    while (fgets(linha, MAX_LINE, fp) != NULL)
-    {
-        // Ignore comment lines and empty lines
-        if (linha[0] == '%' || linha[0] == '\n')
-            continue;
+    while (fgets(line, sizeof(line), fp)) {
+        // Ignore comments and empty lines
+        if (line[0] == '%' || line[0] == '\n') continue;
 
-        // Read the numeric value after '='
-        if (sscanf(linha, "%*[^=]=%lf", &arr[i]) == 1) {
-            i++;  // Only increment if the value was successfully read
+        // Use sscanf to read from the buffer, not from the file
+        switch (values_read) {
+            case 0:  sscanf(line, "%lf", &tf); break;
+            case 1:  sscanf(line, "%lf", &dt); break;
+            case 2:  sscanf(line, "%lf", &S); break;
+            case 3:  sscanf(line, "%lf", &b); break;
+            case 4:  sscanf(line, "%lf", &m); break;
+            case 5:  sscanf(line, "%lf", &rho); break;
+            case 6:  sscanf(line, "%lf", &CD0); break;
+            case 7:  sscanf(line, "%lf", &e); break;
+            case 8:  sscanf(line, "%lf", &alpha); break;
+            case 9:  sscanf(line, "%lf", &V); break;
+            case 10: sscanf(line, "%lf", &gamma_v); break;
+            case 11: sscanf(line, "%lf", &x); break;
+            case 12: sscanf(line, "%lf", &h); break;
+            default: break;
         }
+
+        values_read++;
     }
 
-    fclose(fp);
-
-    // Print the values to verify
-    printf("\nValores lidos:\n");
-    for (int j = 0; j < i; j++)
-    {
-        printf("%lf\n", arr[j]);
-    }
-
-    return 1;
-
-
-    tf=arr[0];
-    dt=arr[1];
-    S=arr[2];
-    b=arr[3];
-    m=arr[4];
-    rho=arr[5];
-    CD0=arr[6];
-    e=arr[7];
-    alpha=arr[8];
-    V=arr[9];
-    gamma_v=arr[10];
-    x=arr[11];
-    h=arr[12];
-
+    printf("%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n%lf\n",
+        tf, dt, S, b, m, rho, CD0, e, alpha, V, gamma_v, x, h);
 
     fclose(fp);
     return 1;
 }
+
+
 
 void simular_voo() { // Simulação (1)
 
