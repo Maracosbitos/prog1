@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 // Definição de constantes
+// Inicio do programa
 #define MAX_LINE 100
 #define PI 3.14159265
 #define MAX_ANGLE 100
