@@ -5,6 +5,7 @@
 // Definição de constantes
 #define MAX_LINE 100
 #define PI 3.14159265
+#define MAX_ANGLE 100
 
 double tf, dt, S, b, m, rho, CD0, e, alpha, g; // Variáveis Lidas
 double V, h, x, gamma_v = 0;
@@ -25,21 +26,37 @@ int scan_parametros(void) // Leitura dos parâmetros
     FILE *fp = fopen("config_modelo.txt", "r");
     if (fp == NULL)
     {
-        printf("Erro ao abrir arquivo config_modelo.txt\n"); //Caso não consiga abrir retorna 0
+        printf("Erro ao abrir arquivo config_modelo.txt\n");
         return 0;
     }
 
     double arr[13] = {0};
-    char var[20];
+    char linha[MAX_LINE];
+    int i = 0;
 
+    while (fgets(linha, MAX_LINE, fp) != NULL)
+    {
+        // Ignore comment lines and empty lines
+        if (linha[0] == '%' || linha[0] == '\n')
+            continue;
 
-    for (int i = 0; i < 13; i++) {
-        if (fscanf(fp, "%[^=]=%lf", var, &arr[i]) != 2) { // Quando a leitura é feita corretamente a função retorna o valor do  número de valores de leitura certa
-            printf("Error reading value at index %d\n", i);
-            arr[i] = 0.0;
+        // Read the numeric value after '='
+        if (sscanf(linha, "%*[^=]=%lf", &arr[i]) == 1) {
+            i++;  // Only increment if the value was successfully read
         }
-        printf("%lf\n", arr[i]);
     }
+
+    fclose(fp);
+
+    // Print the values to verify
+    printf("\nValores lidos:\n");
+    for (int j = 0; j < i; j++)
+    {
+        printf("%lf\n", arr[j]);
+    }
+
+    return 1;
+
 
     tf=arr[0];
     dt=arr[1];
@@ -61,6 +78,7 @@ int scan_parametros(void) // Leitura dos parâmetros
 }
 
 void simular_voo() { // Simulação (1)
+
     FILE *arquivo = fopen("voo_sim.txt", "w");
     if (arquivo == NULL) {
         printf("Erro ao criar o arquivo voo_sim.txt!\n"); //Verifica se o ficheiro existe
